@@ -2,20 +2,22 @@
 
 const AppError = require('../utils/appError');
 
-const handleCastErrorDB = (err) => {
+const handleCastErrorDB = err => {
   const message = `Invalid ${err.path}: ${err.value}`;
   return new AppError(message, 400);
   // already calling these functions inside global error handler, so no need of using next()
 };
 
-const handleDuplicateFieldsDB = (err) => {
+const handleDuplicateFieldsDB = err => {
   const value = Object.values(err.keyValue); // coverts the object to array of values(from key-value pairs)
-  const message = `Duplicate field value: ${value[0]}. Please use another value`;
+  const message = `Duplicate field value: ${
+    value[0]
+  }. Please use another value`;
   return new AppError(message, 404);
 };
 
-const handleValidationErrorDB = (err) => {
-  const errors = Object.values(err.errors).map((el) => el.message);
+const handleValidationErrorDB = err => {
+  const errors = Object.values(err.errors).map(el => el.message);
   const message = `Invalid input data: ${errors.join('. ')}`; // separate the sentences with '. '
   // const message = err.message;
   return new AppError(message, 404);
@@ -34,14 +36,14 @@ const sendErrorDev = (err, req, res) => {
       status: err.status,
       error: err,
       message: err.message,
-      stack: err.stack,
+      stack: err.stack
     });
   }
   // B) RENDERED WEBSITE
   console.log('Error 💥', err);
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',
-    msg: err.message,
+    msg: err.message
   });
 };
 
@@ -52,7 +54,7 @@ const sendErrorProd = (err, req, res) => {
     if (err.isOperational) {
       return res.status(err.statusCode).json({
         status: err.status,
-        message: err.message,
+        message: err.message
       });
 
       // B) Programming or other unknown error: don't leak error details
@@ -63,7 +65,7 @@ const sendErrorProd = (err, req, res) => {
     // 2) Send generic message
     return res.status(500).json({
       status: 'error',
-      message: 'Something went very wrong',
+      message: 'Something went very wrong'
     });
   }
   // B) RENDERED WEBSITE
@@ -71,7 +73,7 @@ const sendErrorProd = (err, req, res) => {
   if (err.isOperational) {
     return res.status(err.statusCode).render('error', {
       title: 'Something went wrong!',
-      msg: err.message,
+      msg: err.message
     });
   }
   // B) Programming or other unknown error: don't leak error details
@@ -81,7 +83,7 @@ const sendErrorProd = (err, req, res) => {
   // 2) Send generic message
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',
-    msg: 'Please try again later',
+    msg: 'Please try again later'
   });
 };
 
