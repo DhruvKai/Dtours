@@ -14,6 +14,8 @@ hosting. It uses the same styles, images and seed data (`dev-data/realData`):
   Demo login: `admin@tours.io` / `test1234`.
 - "Book tour" records a booking locally instead of redirecting to Stripe.
 - Maps use Leaflet + OpenStreetMap, so no API key is needed.
+- The demo has its own redesigned UI (`docs/css/main.css`). Most tour photos are
+  Creative Commons images from Wikimedia Commons, credited on `credits.html`.
 
 Run it locally with any static server, e.g. `npx serve docs`.
 
