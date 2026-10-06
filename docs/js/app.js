@@ -153,9 +153,9 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header${overHero ? ' is-over-hero' : ''}">
       <div class="container site-header__inner">
-        <a class="brand" href="index.html" aria-label="Dtours home">${brandMark}<span>Dtours</span></a>
+        <a class="brand" href="./" aria-label="Dtours home">${brandMark}<span>Dtours</span></a>
         <nav class="site-nav" aria-label="Main">
-          <a href="index.html#tours" ${page === 'overview' ? 'aria-current="page"' : ''}>Tours</a>
+          <a href="./#tours" ${page === 'overview' ? 'aria-current="page"' : ''}>Tours</a>
           ${
             user
               ? `<a href="my-tours.html" ${page === 'my-tours' ? 'aria-current="page"' : ''}>${icon('suitcase-rolling')}<span class="label-optional">My bookings</span></a>`
@@ -184,14 +184,14 @@
       <div class="container">
         <div class="site-footer__top">
           <div>
-            <a class="brand" href="index.html">${brandMark}<span>Dtours</span></a>
+            <a class="brand" href="./">${brandMark}<span>Dtours</span></a>
             <p class="site-footer__tagline">Small-group treks across Himachal Pradesh and Uttarakhand, led by local guides.</p>
           </div>
           <div class="footer-links">
             <div>
               <h3>Explore</h3>
               <ul>
-                <li><a href="index.html#tours">All tours</a></li>
+                <li><a href="./#tours">All tours</a></li>
                 <li><a href="my-tours.html">My bookings</a></li>
                 <li><a href="account.html">Account</a></li>
               </ul>
@@ -218,7 +218,7 @@
         <div class="lost__code">${code}</div>
         <h1>${esc(title)}</h1>
         <p>${esc(msg)}</p>
-        <a class="btn btn--dark" href="index.html">${icon('arrow-left')} Back to all tours</a>
+        <a class="btn btn--dark" href="./">${icon('arrow-left')} Back to all tours</a>
       </div>
     </main>`;
 
@@ -270,7 +270,12 @@
   const overviewPage = () => {
     const avg = tours.reduce((s, t) => s + t.ratingsAverage, 0) / tours.length;
     const guideCount = new Set(tours.flatMap((t) => t.guides.map((g) => g._id))).size;
-    const leads = users.filter((u) => u.role === 'lead-guide').slice(0, 3);
+    // Lead guide first, then the guides who run the most trips
+    const tripCount = (u) => tours.filter((t) => t.guides.some((g) => g._id === u._id)).length;
+    const leads = users
+      .filter((u) => /guide/.test(u.role))
+      .sort((a, b) => (b.role === 'lead-guide') - (a.role === 'lead-guide') || tripCount(b) - tripCount(a))
+      .slice(0, 3);
     const hero = tours.find((t) => t.slug === 'chandar-tal') || tours[0];
     return `
     <main id="main">
@@ -326,7 +331,7 @@
           <div class="reveal">
             <span class="eyebrow">Our guides</span>
             <h2 class="section-title" style="margin-top:12px">Led by people who grew up on these trails.</h2>
-            <p class="section-sub">Our lead guides are from the valleys you’ll be walking through. They pick the campsites, set the pace and know which chai stall is worth the stop.</p>
+            <p class="section-sub">Our guides are from the valleys you’ll be walking through. They pick the campsites, set the pace and know which chai stall is worth the stop.</p>
           </div>
           <ul class="guide-list">
             ${leads
@@ -334,7 +339,7 @@
                 (g, i) => `
               <li class="guide reveal" style="--delay:${i * 100}ms">
                 <img src="${userPhoto(g.photo)}" alt="${esc(g.name)}" loading="lazy">
-                <div><div class="guide__name">${esc(g.name)}</div><div class="guide__role">Lead guide</div></div>
+                <div><div class="guide__name">${esc(g.name)}</div><div class="guide__role">${g.role === 'lead-guide' ? 'Lead guide' : 'Tour guide'}</div></div>
               </li>`
               )
               .join('')}
@@ -362,7 +367,7 @@
       <section class="hero tour-hero">
         <img class="hero__img" src="${photo(tour.imageCover)}" alt="${esc(tour.name)}">
         <div class="container hero__content">
-          <a class="crumb" href="index.html#tours">${icon('arrow-left')} All tours</a>
+          <a class="crumb" href="./#tours">${icon('arrow-left')} All tours</a>
           <h1 class="display hero__title">${esc(tour.name)}</h1>
           <p class="hero__lede">${esc(tour.summary)}</p>
           <div class="facts">
@@ -684,7 +689,7 @@
                  ${icon('backpack')}
                  <h2>No trips booked yet</h2>
                  <p>Pick a route, choose a departure date and it will show up here.</p>
-                 <a class="btn btn--dark" href="index.html#tours">Browse tours</a>
+                 <a class="btn btn--dark" href="./#tours">Browse tours</a>
                </div>`
         }
       </div>
@@ -723,15 +728,27 @@
 
     // GeoJSON order is [lng, lat]; Leaflet wants [lat, lng]
     const points = locations.map((loc) => [loc.coordinates[1], loc.coordinates[0]]);
-    map.fitBounds(points, { padding: [60, 60], maxZoom: 12 });
+    map.fitBounds(points, { padding: [60, 60], maxZoom: 14 });
 
-    locations.forEach((loc, i) => {
-      L.marker(points[i], {
-        icon: L.divIcon({ className: 'map-pin', html: String(loc.day), iconSize: [32, 32], iconAnchor: [16, 16] }),
-        title: `Day ${loc.day}: ${loc.description}`
+    // Stops that share a spot get a single pin, e.g. "1 · 3"
+    const stops = new Map();
+    [...locations]
+      .sort((a, b) => a.day - b.day)
+      .forEach((loc) => {
+        const key = loc.coordinates.map((n) => n.toFixed(4)).join();
+        if (!stops.has(key)) stops.set(key, { latLng: [loc.coordinates[1], loc.coordinates[0]], items: [] });
+        stops.get(key).items.push(loc);
+      });
+
+    stops.forEach(({ latLng, items }) => {
+      const days = items.map((l) => l.day).join(' · ');
+      const label = items.map((l) => `Day ${l.day} · ${esc(l.description)}`).join('<br>');
+      L.marker(latLng, {
+        icon: L.divIcon({ className: 'map-pin-anchor', html: `<span class="map-pin">${days}</span>`, iconSize: [0, 0] }),
+        title: items.map((l) => `Day ${l.day}: ${l.description}`).join(', ')
       })
         .addTo(map)
-        .bindTooltip(`Day ${loc.day} · ${esc(loc.description)}`, { direction: 'top', offset: [0, -18], className: 'map-label' });
+        .bindTooltip(label, { direction: 'top', offset: [0, -18], className: 'map-label' });
     });
   };
 
@@ -767,12 +784,12 @@
         break;
       }
       case 'login':
-        if (user) return location.replace('index.html');
+        if (user) return location.replace('./');
         setTitle('Log in');
         content = loginPage();
         break;
       case 'signup':
-        if (user) return location.replace('index.html');
+        if (user) return location.replace('./');
         setTitle('Create an account');
         content = signupPage();
         break;
@@ -841,7 +858,7 @@
     if (e.target.closest('.js-logout')) {
       auth.logout();
       flash('success', 'You’re logged out.');
-      location.assign('index.html');
+      location.assign('./');
     }
   });
 
@@ -934,7 +951,7 @@
 
   const redirectAfterLogin = () => {
     const next = qs('next');
-    location.assign(next && /^[\w-]+\.html(\?[\w=&%-]*)?$/.test(next) ? next : 'index.html');
+    location.assign(next && /^[\w-]+\.html(\?[\w=&%-]*)?$/.test(next) ? next : './');
   };
 
   const loginForm = $('.form--login');
@@ -965,7 +982,7 @@
       try {
         auth.signup($('#name').value, $('#email').value, $('#password').value, $('#passwordconfirm').value);
         flash('success', 'Your account is ready.');
-        location.assign('index.html');
+        location.assign('./');
       } catch (err) {
         setError(signupForm, err.message);
       }

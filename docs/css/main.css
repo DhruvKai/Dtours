@@ -287,14 +287,35 @@ p {
   opacity: 0.85;
   transition: opacity 0.2s, background-color 0.2s;
 }
-.site-nav a:hover,
 .user-nav__link:hover {
   opacity: 1;
   background: rgba(127, 120, 108, 0.14);
 }
+.site-nav a {
+  position: relative;
+}
+.site-nav a::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 6px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s var(--ease);
+}
+.site-nav a:hover {
+  opacity: 1;
+}
+.site-nav a:hover::after,
+.site-nav a[aria-current='page']::after {
+  transform: scaleX(1);
+}
 .site-nav a[aria-current='page'] {
   opacity: 1;
-  background: rgba(127, 120, 108, 0.16);
 }
 .user-nav {
   display: flex;
@@ -798,12 +819,22 @@ p {
   overflow: hidden;
   background: var(--surface-2);
 }
+/* Zero-size Leaflet marker sits exactly on the point; the pin is centred over it */
+.map-pin-anchor {
+  overflow: visible;
+}
 .map-pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
   display: grid;
   place-items: center;
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 50%;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 9px;
+  border-radius: 999px;
+  white-space: nowrap;
   background: var(--accent);
   color: #fff;
   font: 600 13px/1 var(--font-body);

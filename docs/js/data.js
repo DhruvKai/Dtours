@@ -29,7 +29,7 @@ window.DATA = {
    "maxGroupSize": 15,
    "difficulty": "medium",
    "guides": [
-    "5c8a22c62f8fb814b56fa18b",
+    "5c8a21d02f8fb814b56fa189",
     "5c8a1f4e2f8fb814b56fa185"
    ],
    "price": 497,
@@ -133,8 +133,8 @@ window.DATA = {
      "description": "Chamba Garh",
      "type": "Point",
      "coordinates": [
-      31.913884371082325,
-      77.06461688465582
+      77.06461688465582,
+      31.913884371082325
      ],
      "day": 3
     },
@@ -241,7 +241,7 @@ window.DATA = {
    "maxGroupSize": 15,
    "difficulty": "medium",
    "guides": [
-    "5c8a21f22f8fb814b56fa18a",
+    "5c8a21d02f8fb814b56fa189",
     "5c8a23412f8fb814b56fa18c",
     "5c8a201e2f8fb814b56fa186"
    ],
@@ -285,8 +285,8 @@ window.DATA = {
      "description": "The Beatles Ashram",
      "type": "Point",
      "coordinates": [
-      30.11311775559376,
-      78.31236166693782
+      78.31236166693782,
+      30.11311775559376
      ],
      "day": 9
     }
@@ -322,7 +322,7 @@ window.DATA = {
    "maxGroupSize": 20,
    "difficulty": "easy",
    "guides": [
-    "5c8a22c62f8fb814b56fa18b",
+    "5c8a21d02f8fb814b56fa189",
     "5c8a201e2f8fb814b56fa186"
    ],
    "price": 1197,
@@ -366,7 +366,7 @@ window.DATA = {
   },
   {
    "startLocation": {
-    "description": "Manali, HP",
+    "description": "Kasol, HP",
     "type": "Point",
     "coordinates": [
      77.2855688043266,
@@ -392,7 +392,7 @@ window.DATA = {
    "maxGroupSize": 8,
    "difficulty": "difficult",
    "guides": [
-    "5c8a21f22f8fb814b56fa18a",
+    "5c8a21d02f8fb814b56fa189",
     "5c8a1f292f8fb814b56fa184",
     "5c8a1f4e2f8fb814b56fa185"
    ],
@@ -416,8 +416,8 @@ window.DATA = {
      "description": "Waichin adventure Camp",
      "type": "Point",
      "coordinates": [
-      32.096234913720295,
-      77.2824630561799
+      77.2824630561799,
+      32.096234913720295
      ],
      "day": 4
     },
@@ -426,8 +426,8 @@ window.DATA = {
      "description": "YHAI Base Camp",
      "type": "Point",
      "coordinates": [
-      32.09096470509295,
-      77.28560383932599
+      77.28560383932599,
+      32.09096470509295
      ],
      "day": 6
     },
@@ -436,8 +436,8 @@ window.DATA = {
      "description": "Nirvana Camp",
      "type": "Point",
      "coordinates": [
-      32.098645455039154,
-      77.28995452659186
+      77.28995452659186,
+      32.098645455039154
      ],
      "day": 7
     },
@@ -446,8 +446,8 @@ window.DATA = {
      "description": "River Point",
      "type": "Point",
      "coordinates": [
-      32.100115389170846,
-      77.28747931780815
+      77.28747931780815,
+      32.100115389170846
      ],
      "day": 10
     }
@@ -553,7 +553,7 @@ window.DATA = {
    "maxGroupSize": 12,
    "difficulty": "easy",
    "guides": [
-    "5c8a21f22f8fb814b56fa18a",
+    "5c8a21d02f8fb814b56fa189",
     "5c8a201e2f8fb814b56fa186",
     "5c8a23412f8fb814b56fa18c"
    ],
@@ -604,7 +604,7 @@ window.DATA = {
    "maxGroupSize": 8,
    "difficulty": "easy",
    "guides": [
-    "5c8a22c62f8fb814b56fa18b",
+    "5c8a21d02f8fb814b56fa189",
     "5c8a23412f8fb814b56fa18c"
    ],
    "price": 1997,
@@ -717,20 +717,6 @@ window.DATA = {
    "email": "vaibahv@example.com",
    "role": "lead-guide",
    "photo": "user-10.jpg"
-  },
-  {
-   "_id": "5c8a21f22f8fb814b56fa18a",
-   "name": "Dishant Thakur",
-   "email": "dishant@example.com",
-   "role": "lead-guide",
-   "photo": "user-11.jpg"
-  },
-  {
-   "_id": "5c8a22c62f8fb814b56fa18b",
-   "name": "Rohit Joshi",
-   "email": "rohit@example.com",
-   "role": "lead-guide",
-   "photo": "user-12.jpg"
   },
   {
    "_id": "5c8a23412f8fb814b56fa18c",
